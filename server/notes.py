@@ -41,6 +41,20 @@ def app(environ, start_response):
         _next_id += 1
         return _respond(start_response, "201 Created", note)
     m = re.fullmatch(r"/notes/(\d+)", path)
+    if m and method == "PUT":
+        note_id = int(m[1])
+        if note_id not in NOTES:
+            return _respond(start_response, "404 Not Found", {"error": "not found"})
+        try:
+            raw = environ["wsgi.input"].read(int(environ.get("CONTENT_LENGTH") or 0))
+            text = json.loads(raw)["text"]
+        except (ValueError, KeyError, TypeError):
+            return _respond(start_response, "400 Bad Request", {"error": "text required"})
+        if not isinstance(text, str) or not text.strip():
+            return _respond(start_response, "400 Bad Request", {"error": "text required"})
+        note = {"id": note_id, "text": text}
+        NOTES[note_id] = note
+        return _respond(start_response, "200 OK", note)
     if m and method == "DELETE" and NOTES.pop(int(m[1]), None):
         return _respond(start_response, "204 No Content")
     return _respond(start_response, "404 Not Found", {"error": "not found"})
