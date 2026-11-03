@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Мои заметки</title>
+  <link rel="stylesheet" href="/styles.css">
+  <script type="module" src="/app.js"></script>
+</head>
+<body>
+  <main>
+    <header><p class="eyebrow">ПРОСТРАНСТВО ДЛЯ МЫСЛЕЙ</p><h1>Мои заметки<span>✦</span></h1>
+      <p class="subtitle">Сохраните то, что хочется запомнить.</p></header>
+    <form id="note-form">
+      <label for="text">Новая заметка</label>
+      <textarea id="text" name="text" rows="3" placeholder="О чём вы думаете?" required disabled></textarea>
+      <div class="form-footer"><span>Одна мысль — одна заметка</span><button id="add" type="submit" disabled>Добавить заметку <span aria-hidden="true">↗</span></button></div>
+    </form>
+    <section aria-labelledby="list-title"><div class="list-heading"><h2 id="list-title">Сохранённое</h2><span id="count">0</span></div>
+      <p id="status" role="status" aria-live="polite">Загружаем заметки…</p>
+      <ul id="notes"></ul>
+    </section>
+  </main>
+</body>
+</html>

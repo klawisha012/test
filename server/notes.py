@@ -1,9 +1,15 @@
 import json
 import re
+from pathlib import Path
 from wsgiref.simple_server import make_server
 
 NOTES = {}  # shortcut: in-memory store, lost on restart; swap for a DB when persistence is required
 _next_id = 1
+WEB = Path(__file__).resolve().parents[1] / 'web'
+ASSETS = {'/': ('index.html', 'text/html; charset=utf-8'),
+          '/app.js': ('app.js', 'text/javascript; charset=utf-8'),
+          '/notes-api.js': ('notes-api.js', 'text/javascript; charset=utf-8'),
+          '/styles.css': ('styles.css', 'text/css; charset=utf-8')}
 
 
 def _respond(start_response, status, body=None):
@@ -15,6 +21,11 @@ def _respond(start_response, status, body=None):
 def app(environ, start_response):
     global _next_id
     method, path = environ["REQUEST_METHOD"], environ["PATH_INFO"]
+    if method == 'GET' and path in ASSETS:
+        filename, content_type = ASSETS[path]
+        data = (WEB / filename).read_bytes()
+        start_response('200 OK', [('Content-Type', content_type), ('Content-Length', str(len(data)))])
+        return [data]
     if path == "/notes" and method == "GET":
         return _respond(start_response, "200 OK", list(NOTES.values()))
     if path == "/notes" and method == "POST":
