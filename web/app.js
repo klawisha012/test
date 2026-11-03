@@ -47,7 +47,8 @@ form.addEventListener('submit', async event => {
   add.disabled = true;
   input.disabled = true;
   try {
-    notes.push(await api.add(input.value));
+    const note = await api.add(input.value);
+    notes.push(note);
     input.value = '';
     render();
   } catch (error) {
