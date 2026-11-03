@@ -30,6 +30,14 @@ class NotesTest(unittest.TestCase):
             self.assertEqual(call("POST", "/notes", body)[0], 400)
         self.assertEqual(call("GET", "/notes"), (200, []))
 
+    def test_delete(self):
+        _, note = call("POST", "/notes", {"text": "x"})
+        self.assertEqual(call("DELETE", f"/notes/{note['id']}"), (204, None))
+        self.assertEqual(call("GET", "/notes"), (200, []))
+
+    def test_delete_unknown_id(self):
+        self.assertEqual(call("DELETE", "/notes/999")[0], 404)
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -29,6 +29,9 @@ def app(environ, start_response):
         NOTES[_next_id] = note
         _next_id += 1
         return _respond(start_response, "201 Created", note)
+    m = re.fullmatch(r"/notes/(\d+)", path)
+    if m and method == "DELETE" and NOTES.pop(int(m[1]), None):
+        return _respond(start_response, "204 No Content")
     return _respond(start_response, "404 Not Found", {"error": "not found"})
 
 
